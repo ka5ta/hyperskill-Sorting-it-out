@@ -4,19 +4,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public abstract class Statistics<T>{
+public abstract class DataTypeStatsGenerator<T>{
 
-     SortingType sortingType;
-
-    public Statistics(SortingType sortingType) {
-        this.sortingType = sortingType;
-    }
-
-    abstract void compute();
+    abstract void printStats(SortingType sortingType);
     abstract List<T> sortNaturalOrder(List<T> unsorted);
 
 
-    public List<String> getUserInput(Pattern delimiter){
+
+    public static List<String> getUserInput(Pattern delimiter){
         return new Scanner(System.in)
                 .useDelimiter(delimiter)
                 .tokens()
@@ -33,7 +28,21 @@ public abstract class Statistics<T>{
                 .collect(Collectors.toList());
     }
 
-    public <K extends Comparable<? super K>> Map<K, Integer> getKeyOccurrence(List<K> listToSort){
+    public Comparator<Map.Entry<String, Integer>> comparatorIntValueThenStringKey(){
+        return new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                int compVal = Integer.compare(o1.getValue(),(o2.getValue()));
+                if (compVal == 0) {
+                    return o1.getKey().compareTo(o2.getKey());
+                } else {
+                    return compVal;
+                }
+            }
+        };
+    }
+
+    private <K extends Comparable<? super K>> Map<K, Integer> getKeyOccurrence(List<K> listToSort){
 
         Map<K, Integer> occurrenceMap = new HashMap<>();
 
@@ -49,11 +58,12 @@ public abstract class Statistics<T>{
     }
 
 
+    // PRINT METHODS:
     public <V> void printStatsByNaturalOrder(List<V> sortedList, Pattern delimiter){
         System.out.printf("Sorted data:%s%s", delimiter, convertListItemsToText(sortedList, delimiter));
     }
 
-    public static <T> String convertListItemsToText(List<T> listToPrint, Pattern delimiter) {
+    private static <T> String convertListItemsToText(List<T> listToPrint, Pattern delimiter) {
         StringBuilder sb = new StringBuilder();
         listToPrint.forEach(i -> sb.append(i).append(delimiter));
         return sb.toString();
@@ -66,7 +76,7 @@ public abstract class Statistics<T>{
         });
     }
 
-    int getPercentage(int maxOccurrence, int size) {
+    private int getPercentage(int maxOccurrence, int size) {
         double percentage = Math.round(maxOccurrence * 100 / (double) size);
         return (int) percentage;
     }

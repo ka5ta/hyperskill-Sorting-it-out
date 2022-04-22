@@ -4,14 +4,10 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class LongStatistics extends Statistics<Long> {
-
-    public LongStatistics(SortingType sortingType) {
-        super(sortingType);
-    }
+public class LongDataType extends DataTypeStatsGenerator<Long> {
 
     @Override
-    void compute() {
+    void printStats(SortingType sortingType) {
 
         // Get list from user input
         List<String> outList = getUserInput(Pattern.compile("\\s+"));
@@ -19,20 +15,16 @@ public class LongStatistics extends Statistics<Long> {
         List<Long> longs = convertStringsToLongs(outList);
 
 
-        //Sort and print stats BY_COUNT.
-        //END
-        if (super.sortingType == SortingType.BY_COUNT) {
+        if (sortingType == SortingType.BY_COUNT) {
             System.out.printf("Total numbers: %d.\n", longs.size());
             List<Map.Entry<Long, Integer>> sortedByCount = sortListByCount(longs, comparatorIntValueLongKey());
             printStatsByCount(sortedByCount);
-            return;
+        } else {
+            //NATURAL (smaller -> bigger)
+            List<Long> sortedNatural = sortNaturalOrder(longs);
+            System.out.printf("Total numbers: %d.\n", longs.size());
+            printStatsByNaturalOrder(sortedNatural, Pattern.compile(" "));
         }
-
-        //Sort and prints NATURAL
-        //Print summary by SortingType: Natural (smaller -> bigger)
-        List<Long> sortedNatural = sortNaturalOrder(longs);
-        System.out.printf("Total numbers: %d.\n", longs.size());
-        printStatsByNaturalOrder(sortedNatural, Pattern.compile(" "));
     }
 
 

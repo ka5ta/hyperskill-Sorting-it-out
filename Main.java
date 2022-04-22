@@ -1,7 +1,5 @@
 package sorting;
 
-import java.util.*;
-
 public class Main {
 
     private static SortingType sortingType;
@@ -9,10 +7,10 @@ public class Main {
 
 
     public static void main(final String[] args) {
-
         getCommandFromArgs(args);
         getStatistics(dataType);
     }
+
 
     private static void getCommandFromArgs(String[] args) {
         for (int i = 0; i < args.length; i++) {
@@ -47,13 +45,13 @@ public class Main {
         }
         switch (dataType) {
             case "long":
-                new LongStatistics(sortingType).compute();
+                new LongDataType().printStats(sortingType);
                 break;
             case "line":
-                new LineStatistics(sortingType).compute();
+                new LineDataType().printStats(sortingType);
                 break;
             case "word":
-                new WordStatistics(sortingType).compute();
+                new WordDataType().printStats(sortingType);
                 break;
             default:
                 System.out.println("No data type defined!");
