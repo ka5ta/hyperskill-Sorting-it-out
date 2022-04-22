@@ -4,6 +4,12 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * @param <T> specific to the extending class type
+ *           in project its <String> or <Long>
+ */
+
 public abstract class DataTypeStatsGenerator<T>{
 
     abstract void printStats(SortingType sortingType);
