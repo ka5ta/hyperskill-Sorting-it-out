@@ -39,10 +39,11 @@ public abstract class DataTypeStatsGenerator<T>{
 
 
     public List<String> getDataFromText(String data, Pattern delimiter){
-        return new Scanner(data)
-                .useDelimiter(delimiter)
-                .tokens()
-                .collect(Collectors.toList());
+        try(Scanner scanner = new Scanner(data)) {
+            return scanner
+                    .useDelimiter(delimiter)
+                    .tokens().collect(Collectors.toList());
+        }
     }
 
     public <K extends Comparable<K>> List<Map.Entry<K, Integer>> sortListByCount(List<K> listToSort,

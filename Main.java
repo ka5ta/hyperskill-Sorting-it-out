@@ -97,6 +97,7 @@ public class Main {
         while(scanner.hasNextLine()){
             sb.append(scanner.nextLine()).append("\n");
         }
+        scanner.close();
         return sb.toString();
     }
 
