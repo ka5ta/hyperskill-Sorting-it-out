@@ -7,23 +7,21 @@ import java.util.stream.Collectors;
 public class LongDataType extends DataTypeStatsGenerator<Long> {
 
     @Override
-    void printStats(SortingType sortingType) {
+    public String generateStats(String data, SortingType sortingType) {
 
-        // Get list from user input
-        List<String> outList = getUserInput(Pattern.compile("\\s+"));
+        //Get list of words from text
+        List<String> outList = getDataFromText(data, Pattern.compile("\\s+"));
         // Convert Strings list to Longs
         List<Long> longs = convertStringsToLongs(outList);
 
 
         if (sortingType == SortingType.BY_COUNT) {
-            System.out.printf("Total numbers: %d.\n", longs.size());
             List<Map.Entry<Long, Integer>> sortedByCount = sortListByCount(longs, comparatorIntValueLongKey());
-            printStatsByCount(sortedByCount);
+            return getStatsByCount(sortedByCount, longs.size());
         } else {
             //NATURAL (smaller -> bigger)
             List<Long> sortedNatural = sortNaturalOrder(longs);
-            System.out.printf("Total numbers: %d.\n", longs.size());
-            printStatsByNaturalOrder(sortedNatural, Pattern.compile(" "));
+            return getStatsByNaturalOrder(sortedNatural, Pattern.compile(" "));
         }
     }
 

@@ -7,21 +7,19 @@ import java.util.stream.Collectors;
 public class WordDataType extends DataTypeStatsGenerator<String> {
 
     @Override
-    public void printStats(SortingType sortingType) {
+    public String generateStats(String data, SortingType sortingType) {
 
-        //Input from user
-        List<String> outList = getUserInput(Pattern.compile("\\s+"));
-        System.out.printf("Total words: %d.\n", outList.size());
-
+        //Get list of words from text
+        List<String> outList = getDataFromText(data, Pattern.compile("\\s+"));
 
         if (sortingType == SortingType.BY_COUNT) {
             List<Map.Entry<String, Integer>> sortedStringsByCount = sortListByCount(outList,
                     comparatorIntValueThenStringKey());
-            printStatsByCount(sortedStringsByCount);
+            return getStatsByCount(sortedStringsByCount, outList.size());
         } else {
             //NATURAL (shorter -> longer)
             List<String> sortedStringNatural = sortNaturalOrder(outList);
-            printStatsByNaturalOrder(sortedStringNatural, Pattern.compile(" "));
+            return getStatsByNaturalOrder(sortedStringNatural, Pattern.compile(" "));
         }
     }
 

@@ -1,5 +1,9 @@
 package sorting;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -12,13 +16,30 @@ import java.util.stream.Collectors;
 
 public abstract class DataTypeStatsGenerator<T>{
 
-    abstract void printStats(SortingType sortingType);
+    abstract String generateStats(String data, SortingType sortingType);
     abstract List<T> sortNaturalOrder(List<T> unsorted);
 
+    public static String getStatisticsByType(String data, String dataType, SortingType sortingType) {
+        if (dataType == null) {
+            throw new RuntimeException("No data type defined!");
+        }
+        switch (dataType) {
+            case "long":
+                return new LongDataType().generateStats(data, sortingType);
+            case "line":
+                return new LineDataType().generateStats(data, sortingType);
+            case "word":
+                return new WordDataType().generateStats(data, sortingType);
+            default:
+                System.out.println("No data type defined!");
+                break;
+        }
+        throw new RuntimeException("Statistics could not be generated");
+    }
 
 
-    public static List<String> getUserInput(Pattern delimiter){
-        return new Scanner(System.in)
+    public List<String> getDataFromText(String data, Pattern delimiter){
+        return new Scanner(data)
                 .useDelimiter(delimiter)
                 .tokens()
                 .collect(Collectors.toList());
@@ -65,8 +86,12 @@ public abstract class DataTypeStatsGenerator<T>{
 
 
     // PRINT METHODS:
-    public <V> void printStatsByNaturalOrder(List<V> sortedList, Pattern delimiter){
-        System.out.printf("Sorted data:%s%s", delimiter, convertListItemsToText(sortedList, delimiter));
+    public <V> String getStatsByNaturalOrder(List<V> sortedList, Pattern delimiter){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Total words: %d.\n", sortedList.size()));
+        sb.append(String.format("Sorted data:%s%s", delimiter, convertListItemsToText(sortedList, delimiter)));
+        //System.out.println(sb);
+        return sb.toString();
     }
 
     private static <T> String convertListItemsToText(List<T> listToPrint, Pattern delimiter) {
@@ -75,11 +100,16 @@ public abstract class DataTypeStatsGenerator<T>{
         return sb.toString();
     }
 
-    public <K> void printStatsByCount(List<Map.Entry<K, Integer>> entryList){
+    public <K> String getStatsByCount(List<Map.Entry<K, Integer>> entryList, int dataSize){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Total words: %d.\n", dataSize));
+
         entryList.forEach(e -> {
-            int percentage = getPercentage(e.getValue(), entryList.size());
-            System.out.printf("%s: %d time(s), %s%s\n", e.getKey(), e.getValue(), percentage, "%");
+            int percentage = getPercentage(e.getValue(), dataSize);
+            sb.append(String.format("%s: %d time(s), %s%s\n", e.getKey(), e.getValue(), percentage, "%"));
         });
+        //System.out.println(sb);
+        return sb.toString();
     }
 
     private int getPercentage(int maxOccurrence, int size) {

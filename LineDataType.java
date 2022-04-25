@@ -9,19 +9,18 @@ import java.util.stream.Collectors;
 public class LineDataType extends DataTypeStatsGenerator<String> {
 
     @Override
-    void printStats(SortingType sortingType) {
+    public String generateStats(String data, SortingType sortingType) {
 
-        //Input from user
-        List<String> outList = getUserInput(Pattern.compile("\n"));
-        System.out.printf("Total words: %d.\n", outList.size());
+        //Get list of words from text
+        List<String> outList = getDataFromText(data, Pattern.compile("\n"));
 
         if (sortingType == SortingType.BY_COUNT) {
             List<Map.Entry<String, Integer>> sortedByCount = sortListByCount(outList, comparatorIntValueThenStringKey());
-            printStatsByCount(sortedByCount);
+            return getStatsByCount(sortedByCount, outList.size());
         } else {
             //NATURAL
             List<String> sortedReverse = sortNaturalOrder(outList);
-            printStatsByNaturalOrder(sortedReverse, Pattern.compile("\n"));
+            return getStatsByNaturalOrder(sortedReverse, Pattern.compile("\n"));
         }
     }
 
